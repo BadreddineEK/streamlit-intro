@@ -7,11 +7,30 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Language toggle ──────────────────────────────────────────────────
+# ── Hide default nav + style ───────────────────────────────────────────
+st.markdown("""
+<style>
+[data-testid="stSidebarNav"] { display: none; }
+.nav-link { padding: 6px 12px; border-radius: 8px; text-decoration: none;
+            display: block; margin: 2px 0; color: inherit; font-size: 0.95rem; }
+.nav-link:hover { background: rgba(255,255,255,0.08); }
+</style>
+""", unsafe_allow_html=True)
+
+# ── Sidebar ───────────────────────────────────────────────────────────────
 with st.sidebar:
     lang = st.radio("🌐 Language", ["🇫🇷 Français", "🇬🇧 English"], horizontal=True, label_visibility="collapsed")
+    FR = "English" not in lang
     st.divider()
-    st.markdown("### 👤 Author" if "English" in lang else "### 👤 Auteur")
+    st.markdown("### 🗺️ " + ("Navigation" if not FR else "Navigation"))
+    st.page_link("app.py",                label="🏠  " + ("Accueil"          if FR else "Home"))
+    st.page_link("pages/1_widgets.py",    label="🎛️  " + ("Les Widgets"       if FR else "Widgets"))
+    st.page_link("pages/2_data.py",       label="📊  " + ("Données & Graphiques" if FR else "Data & Charts"))
+    st.page_link("pages/3_layouts.py",    label="🧱  " + ("Layouts"           if FR else "Layouts"))
+    st.page_link("pages/4_deploy.py",     label="🚀  " + ("Déploiement"        if FR else "Deployment"))
+    st.page_link("pages/5_ml_demo.py",    label="🤖  " + ("Démo ML"           if FR else "ML Demo"))
+    st.divider()
+    st.markdown("### 👤 " + ("Auteur" if FR else "Author"))
     st.markdown("""
 **Badreddine EL KHAMLICHI**
 
@@ -21,14 +40,14 @@ with st.sidebar:
 
 FR = "English" not in lang
 
-# ── Contenu ──────────────────────────────────────────────────────────
+# ── Contenu ───────────────────────────────────────────────────────────────
 if FR:
     st.title("🐍 Apprendre Streamlit, avec Streamlit")
     st.subheader("Un guide interactif, pédagogique et concret.")
     st.markdown("""
 Streamlit, c'est la réponse à une question que tout data scientist finit par se poser :
 
-> *"J'ai un modèle/une analyse qui tourne bien en local… comment je la montre à des gens qui ne codent pas ?"
+> *"J'ai un modèle qui tourne bien en local… comment je le montre à des gens qui ne codent pas ?"*
 
 En quelques dizaines de lignes Python, Streamlit transforme un script en application web interactive,
 déployable gratuitement en ligne — sans HTML, sans CSS, sans JavaScript.
@@ -39,7 +58,7 @@ else:
     st.markdown("""
 Streamlit answers the question every data scientist eventually asks:
 
-> *"My model runs great locally… how do I show it to people who don't code?"
+> *"My model runs great locally… how do I show it to people who don't code?"*
 
 With just a few dozen lines of Python, Streamlit turns a script into an interactive web app,
 deployable online for free — no HTML, no CSS, no JavaScript required.
@@ -49,59 +68,51 @@ st.divider()
 
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-    st.metric("⚡ Setup", "< 5 min", help="pip install + 1 fichier .py" if FR else "pip install + 1 .py file")
+    st.metric("⚡ Setup", "< 5 min")
 with col2:
-    st.metric("📦 Libraries", "100 %", "Pandas, Plotly, sklearn…")
+    st.metric("📦 Libraries", "100%", "Pandas, Plotly, sklearn…")
 with col3:
-    st.metric("🚀 Deploy", "Free" if not FR else "Gratuit", "Streamlit Cloud")
+    st.metric("🚀 " + ("Déploiement" if FR else "Deploy"), "🌟 Free", "Streamlit Cloud")
 with col4:
-    st.metric("🐍 Language", "Python only", "no JS/HTML needed" if not FR else "pas de JS/HTML")
+    st.metric("🐍 Code", "Python only", "no JS/HTML" if not FR else "pas de JS/HTML")
 
 st.divider()
 
-if FR:
-    st.markdown("## 🗺️ Ce que tu vas apprendre")
-    modules = [
-        ("🎛️", "Les widgets",            "Boutons, sliders, selectbox, text_input… tous les composants interactifs."),
-        ("📊", "Données & graphiques",   "Afficher des DataFrames, tracer des courbes avec Plotly, filtrer en temps réel."),
-        ("🧱", "Layouts & mise en page", "Colonnes, tabs, expanders, sidebar — structurer une vraie app."),
-        ("🚀", "Déployer son app",       "Passer de localhost:8501 à une URL publique en 5 minutes."),
-    ]
-else:
-    st.markdown("## 🗺️ What you'll learn")
-    modules = [
-        ("🎛️", "Widgets",               "Buttons, sliders, selectbox, text_input… all interactive components."),
-        ("📊", "Data & charts",          "Display DataFrames, plot with Plotly, filter in real time."),
-        ("🧱", "Layouts",               "Columns, tabs, expanders, sidebar — build a structured app."),
-        ("🚀", "Deployment",             "Go from localhost:8501 to a public URL in 5 minutes."),
-    ]
+st.markdown("## 🗺️ " + ("Ce que tu vas apprendre" if FR else "What you'll learn"))
 
-for icon, titre, desc in modules:
-    with st.container(border=True):
-        st.markdown(f"### {icon} {titre}")
-        st.write(desc)
+modules = [
+    ("🎛️", "Les widgets"             if FR else "Widgets",
+              "Boutons, sliders, selectbox… tous les composants interactifs." if FR else "Buttons, sliders, selectbox… all interactive components."),
+    ("📊", "Données & Graphiques"    if FR else "Data & Charts",
+              "DataFrames filtrables, Plotly, cache." if FR else "Filterable DataFrames, Plotly charts, caching."),
+    ("🧱", "Layouts"                 if FR else "Layouts",
+              "Colonnes, tabs, expanders — structurer une vraie app." if FR else "Columns, tabs, expanders — build a structured app."),
+    ("🚀", "Déploiement"             if FR else "Deployment",
+              "De localhost à une URL publique en 5 min." if FR else "From localhost to a public URL in 5 min."),
+    ("🤖", "Démo ML"                 if FR else "ML Demo",
+              "Un vrai modèle ML interactif, directement dans l'app." if FR else "A real interactive ML model, live in the app."),
+]
+
+cols = st.columns(5)
+for col, (icon, titre, desc) in zip(cols, modules):
+    with col:
+        with st.container(border=True):
+            st.markdown(f"#### {icon} {titre}")
+            st.caption(desc)
 
 st.divider()
-
-if FR:
-    st.markdown("## ⚡ Démarrer en 3 lignes")
-else:
-    st.markdown("## ⚡ Get started in 3 lines")
-
+st.markdown("## ⚡ " + ("Démarrer en 3 lignes" if FR else "Get started in 3 lines"))
 st.code("""
-# 1. Install
 pip install streamlit
 
-# 2. Create hello.py
+# hello.py
 import streamlit as st
-st.title("Hello, World!")
-st.write("My Streamlit app is running 🚀")
+st.title("Hello World 🚀")
+st.write("My first Streamlit app!")
 
-# 3. Run
 streamlit run hello.py
 """, language="bash")
-
 if FR:
-    st.info("👈 Commence par le module **Les widgets** dans le menu de gauche.")
+    st.info("👈 Commence par **Les Widgets** dans la sidebar.")
 else:
-    st.info("👈 Start with the **Widgets** module in the left menu.")
+    st.info("👈 Start with **Widgets** in the sidebar.")

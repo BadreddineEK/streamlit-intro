@@ -1,15 +1,23 @@
 import streamlit as st
 
 st.set_page_config(page_title="Deployment", page_icon="🚀", layout="wide")
+st.markdown('<style>[data-testid="stSidebarNav"] { display: none; }</style>', unsafe_allow_html=True)
 
-# ── Language ─────────────────────────────────────────────────────────
 with st.sidebar:
     lang = st.radio("🌐 Language", ["🇫🇷 Français", "🇬🇧 English"], horizontal=True, label_visibility="collapsed")
+    FR = "English" not in lang
     st.divider()
-    st.markdown("### 👤 Author" if "English" in lang else "### 👤 Auteur")
+    st.markdown("### 🗺️ Navigation")
+    st.page_link("app.py",             label="🏠  " + ("Accueil" if FR else "Home"))
+    st.page_link("pages/1_widgets.py", label="🎛️  " + ("Les Widgets" if FR else "Widgets"))
+    st.page_link("pages/2_data.py",    label="📊  " + ("Données & Graphiques" if FR else "Data & Charts"))
+    st.page_link("pages/3_layouts.py", label="🧱  " + ("Layouts" if FR else "Layouts"))
+    st.page_link("pages/4_deploy.py",  label="🚀  " + ("Déploiement" if FR else "Deployment"))
+    st.page_link("pages/5_ml_demo.py", label="🤖  " + ("Démo ML" if FR else "ML Demo"))
+    st.divider()
+    st.markdown("### 👤 " + ("Auteur" if FR else "Author"))
     st.markdown("""
 **Badreddine EL KHAMLICHI**
-
 [![GitHub](https://img.shields.io/badge/GitHub-BadreddineEK-black?logo=github)](https://github.com/BadreddineEK)
 [![Portfolio](https://img.shields.io/badge/Portfolio-Voir-blue)](https://badreddineek.github.io/portfolioBadreddine)
     """)
@@ -18,158 +26,63 @@ FR = "English" not in lang
 
 if FR:
     st.title("🚀 Déployer son app")
-    st.caption("De localhost:8501 à une URL publique — en 5 minutes, gratuitement.")
-    st.markdown("Une app qui tourne uniquement sur ton ordinateur ne sert qu'à toi. Streamlit Cloud permet de déployer n'importe quel projet GitHub en quelques clics — et c'est **gratuit**.")
+    st.caption("De localhost:8501 à une URL publique — en 5 min, gratuitement.")
 else:
     st.title("🚀 Deploy your app")
-    st.caption("From localhost:8501 to a public URL — in 5 minutes, for free.")
-    st.markdown("An app that only runs on your machine is only useful to you. Streamlit Cloud lets you deploy any GitHub project in a few clicks — and it's **free**.")
+    st.caption("From localhost:8501 to a public URL — in 5 min, for free.")
 
 st.divider()
-
-# ── Étapes ───────────────────────────────────────────────────────────
 st.markdown("## 📋 " + ("Les 5 étapes" if FR else "5 steps"))
 
-if FR:
-    étapes = [
-        ("1", "Crée ton `requirements.txt`",
-         "Liste toutes les librairies utilisées.",
-         "streamlit\npandas\nplotly\nnumpy"),
-        ("2", "Push sur GitHub",
-         "Ton repo doit contenir : `app.py` + `requirements.txt`.",
-         "git add .\ngit commit -m 'feat: streamlit app'\ngit push origin main"),
-        ("3", "Va sur share.streamlit.io",
-         "Connecte-toi avec ton compte GitHub.", None),
-        ("4", "Clique sur 'New app'",
-         "Sélectionne ton repo, ta branche, et le fichier principal (`app.py`).", None),
-        ("5", "Déploie 🎉",
-         "Streamlit installe les dépendances et génère une URL publique.", None),
-    ]
-else:
-    étapes = [
-        ("1", "Create your `requirements.txt`",
-         "List all the libraries your app uses.",
-         "streamlit\npandas\nplotly\nnumpy"),
-        ("2", "Push to GitHub",
-         "Your repo must contain: `app.py` + `requirements.txt`.",
-         "git add .\ngit commit -m 'feat: streamlit app'\ngit push origin main"),
-        ("3", "Go to share.streamlit.io",
-         "Sign in with your GitHub account.", None),
-        ("4", "Click 'New app'",
-         "Select your repo, branch, and main file (`app.py`).", None),
-        ("5", "Deploy 🎉",
-         "Streamlit installs dependencies and gives you a public URL.", None),
-    ]
-
-for num, titre, desc, code in étapes:
+steps_fr = [
+    ("1", "Crée ton `requirements.txt`", "Liste toutes les librairies.", "streamlit\npandas\nplotly\nnumpy"),
+    ("2", "Push sur GitHub", "`app.py` + `requirements.txt` dans le repo.", "git add .\ngit commit -m 'feat: app'\ngit push origin main"),
+    ("3", "Va sur share.streamlit.io", "Connecte ton compte GitHub.", None),
+    ("4", "Clique 'New app'", "Sélectionne repo, branche, et `app.py`.", None),
+    ("5", "Deploy 🎉", "Streamlit génère une URL publique.", None),
+]
+steps_en = [
+    ("1", "Create `requirements.txt`", "List all your app's libraries.", "streamlit\npandas\nplotly\nnumpy"),
+    ("2", "Push to GitHub", "Repo must contain `app.py` + `requirements.txt`.", "git add .\ngit commit -m 'feat: app'\ngit push origin main"),
+    ("3", "Go to share.streamlit.io", "Sign in with GitHub.", None),
+    ("4", "Click 'New app'", "Select repo, branch, and `app.py`.", None),
+    ("5", "Deploy 🎉", "Streamlit builds and gives you a public URL.", None),
+]
+for num, titre, desc, code in (steps_fr if FR else steps_en):
     with st.container(border=True):
-        col1, col2 = st.columns([0.07, 0.93])
-        with col1:
-            st.markdown(f"## {num}")
-        with col2:
-            st.markdown(f"**{titre}**")
-            st.write(desc)
-            if code:
-                st.code(code)
+        c1, c2 = st.columns([0.07, 0.93])
+        with c1: st.markdown(f"## {num}")
+        with c2:
+            st.markdown(f"**{titre}**"); st.write(desc)
+            if code: st.code(code)
 
 st.divider()
-
-# ── requirements.txt ─────────────────────────────────────────────────
-st.markdown("## 📦 `requirements.txt` — " + ("point critique" if FR else "the critical file"))
-if FR:
-    st.markdown("Si une librairie est absente, l'app plante au démarrage. C'est le fichier le plus important du déploiement.")
-else:
-    st.markdown("If a library is missing, the app crashes on startup. It's the most important file for deployment.")
-
-with st.expander("📄 Voir un exemple" if FR else "📄 See an example"):
-    st.code("""
-streamlit>=1.32.0
-pandas>=2.0.0
-plotly>=5.0.0
-numpy>=1.26.0
-scikit-learn>=1.4.0
-""", language="text")
+st.markdown("## 📦 requirements.txt")
+with st.expander("📄 Exemple"):
+    st.code("streamlit>=1.32.0\npandas>=2.0.0\nplotly>=5.0.0\nnumpy>=1.26.0\nscikit-learn>=1.4.0", language="text")
 
 col1, col2 = st.columns(2)
 with col1:
     with st.container(border=True):
-        st.markdown("### ✅ " + ("Bonne pratique" if FR else "Best practice"))
-        if FR:
-            st.markdown("""
-- Génère avec `pip freeze > requirements.txt`
-- Ou liste manuellement uniquement ce que tu utilises
-- Spécifie des versions minimales avec `>=`
-            """)
-        else:
-            st.markdown("""
-- Generate with `pip freeze > requirements.txt`
-- Or manually list only what you actually use
-- Specify minimum versions with `>=`
-            """)
+        st.markdown("### ✅ " + ("Bonnes pratiques" if FR else "Best practices"))
+        st.markdown("- `pip freeze > requirements.txt`\n- Versions minimales avec `>=`\n- Lister uniquement ce qu'on utilise" if FR else "- `pip freeze > requirements.txt`\n- Minimum versions with `>=`\n- Only list what you actually use")
 with col2:
     with st.container(border=True):
-        st.markdown("### ❌ " + ("Erreurs courantes" if FR else "Common mistakes"))
-        if FR:
-            st.markdown("""
-- Oublier une librairie → `ModuleNotFoundError`
-- Versionner trop strictement → conflits
-- Inclure des librairies locales inutiles (ex: `pywin32`)
-            """)
-        else:
-            st.markdown("""
-- Forgetting a library → `ModuleNotFoundError`
-- Pinning versions too strictly → dependency conflicts
-- Including local-only packages (e.g. `pywin32`)
-            """)
+        st.markdown("### ❌ " + ("Erreurs fréquentes" if FR else "Common mistakes"))
+        st.markdown("- Librairie oubliée → crash\n- Versions trop strictes → conflits\n- Packages locaux (ex: `pywin32`)" if FR else "- Missing lib → crash\n- Versions too strict → conflicts\n- Local-only packages (e.g. `pywin32`)")
 
 st.divider()
-
-# ── Alternatives ─────────────────────────────────────────────────────
-st.markdown("## 🔀 " + ("Alternatives à Streamlit Cloud" if FR else "Alternatives to Streamlit Cloud"))
-
-alt = [
-    ("🤗 Hugging Face Spaces", "Gratuit, idéal pour les apps ML/IA" if FR else "Free, ideal for ML/AI apps",             "https://huggingface.co/spaces"),
-    ("🐳 Docker + VPS",        "Plus flexible, nécessite un serveur" if FR else "More flexible, requires a server",       "https://docs.streamlit.io/deploy/tutorials/docker"),
-    ("☁️ GCP / AWS / Azure",   "Pour la production avec contraintes entreprise" if FR else "For production with enterprise constraints", "https://cloud.google.com"),
-]
-
-for nom, desc, lien in alt:
+st.markdown("## 🔀 " + ("Alternatives" if FR else "Alternatives"))
+for nom, desc, url in [
+    ("🤗 Hugging Face Spaces", "Gratuit, parfait ML/IA" if FR else "Free, great for ML/AI", "https://huggingface.co/spaces"),
+    ("🐳 Docker + VPS", "Flexible, serveur requis" if FR else "Flexible, needs a server", "https://docs.streamlit.io/deploy/tutorials/docker"),
+    ("☁️ Cloud (GCP/AWS/Azure)", "Production enterprise" if FR else "Enterprise production", "https://cloud.google.com"),
+]:
     with st.container(border=True):
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            st.markdown(f"**{nom}**")
-            st.write(desc)
-        with col2:
-            st.link_button("Voir →" if FR else "See →", lien)
+        c1, c2 = st.columns([3,1])
+        with c1: st.markdown(f"**{nom}**"); st.write(desc)
+        with c2: st.link_button("Voir →" if FR else "See →", url)
 
 st.divider()
-
-# ── Fin ──────────────────────────────────────────────────────────────
-if FR:
-    st.success("🎉 Tu sais maintenant créer et déployer une app Streamlit de A à Z !")
-else:
-    st.success("🎉 You now know how to build and deploy a Streamlit app from scratch!")
-
-st.markdown("## 👤 " + ("À propos de cette app" if FR else "About this app"))
-with st.container(border=True):
-    col1, col2 = st.columns([2, 1])
-    with col1:
-        if FR:
-            st.markdown("""
-**Badreddine EL KHAMLICHI**  
-Diplôme ingénieur Polytech Lyon · Double master Maths & MAE IAE Lyon  
-
-J'utilise Streamlit au quotidien pour créer des outils data viz sur mesure.  
-Cette app est mon retour d'expérience condensé.
-            """)
-        else:
-            st.markdown("""
-**Badreddine EL KHAMLICHI**  
-Engineering degree Polytech Lyon · Double master Maths & MAE IAE Lyon  
-
-I use Streamlit daily to build custom data visualisation tools.  
-This app is my condensed hands-on experience.
-            """)
-    with col2:
-        st.link_button("🐙 GitHub", "https://github.com/BadreddineEK", use_container_width=True)
-        st.link_button("🌐 Portfolio", "https://badreddineek.github.io/portfolioBadreddine", use_container_width=True)
+st.success("🎉 " + ("Tu sais déployer une app Streamlit !" if FR else "You know how to deploy a Streamlit app!"))
+st.info("🤖 " + ("Dernière étape : essaie la **Démo ML** !" if FR else "Last step: try the **ML Demo**!"))
